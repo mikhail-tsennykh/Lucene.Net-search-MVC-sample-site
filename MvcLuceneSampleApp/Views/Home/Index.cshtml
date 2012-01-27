@@ -1,0 +1,80 @@
+﻿@model MvcLuceneSampleApp.ViewModels.IndexViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Lucene.Net ultra fast search for MVC or WebForms site => made easy!</title>
+	<style type="text/css">
+		div, p {padding: 3px 5px; margin-bottom: 30px;}
+	</style>
+</head>
+<body>
+	<div>
+			
+		<h2><a href="/">Lucene.Net ultra fast search for MVC or WebForms site => made easy!</a></h2>
+		
+		<h3>Simple Lucene.Net Usage Example Site</h3>
+
+		<p style="float: right;">
+			<span style="color: green;">@TempData["Result"]</span>
+			<span style="color: red;">@TempData["ResultFail"]</span>
+		</p>
+		
+		<p style="float: left; width: 300px;">
+		  <strong>All records in database</strong> (@Html.ActionLink("Create Index [+]", "CreateIndex"))
+			@foreach (var record in Model.AllSampleData) {
+				<br/><span>@record.Id, @record.Name, @record.Description</span>
+			}			
+		</p>
+		
+		<p style="float: left; width: 300px;">
+		  <strong>All records in search index</strong> (@Html.ActionLink("Clear Index [X]", "ClearIndex"))
+			@if (Model.AllSearchIndexData.Any()) {
+				foreach (var record in Model.AllSearchIndexData) {
+					<br/><span>@record.Id, @record.Name, @record.Description</span>
+				}
+			} else {
+				<text><br/>Index is empty.</text>
+			}
+		</p>
+		<div style="clear: both;"></div>
+
+		<div>
+			<strong>Add new record to search index:</strong><br/>
+			@using (Html.BeginForm("AddToIndex", "Home")) {
+				@Html.LabelFor(m => m.SampleData.Id)
+				@Html.EditorFor(m => m.SampleData.Id)
+
+				@Html.LabelFor(m => m.SampleData.Name)
+				@Html.EditorFor(m => m.SampleData.Name)
+
+				@Html.LabelFor(m => m.SampleData.Description)
+				@Html.EditorFor(m => m.SampleData.Description)
+	 
+				<input type="submit" value="Add Record" />
+			}
+		</div>
+		
+		<div>
+			<strong>Do the Search!</strong><br/>
+			@using (Html.BeginForm("SearchIndex", "Home")) {
+				@Html.LabelFor(m => m.SearchTerm)
+				@Html.EditorFor(m => m.SearchTerm)
+	 
+				<input type="submit" value="Search" />
+			}
+		</div>
+		
+		<div>
+			@foreach (var record in Model.SampleSearchResults) {
+				<p>@record.Id, @record.Name, @record.Description</p>
+			}
+		</div>
+        
+  </div>
+</body>
+</html>
