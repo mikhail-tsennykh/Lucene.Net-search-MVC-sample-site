@@ -129,12 +129,12 @@ namespace MvcLuceneSampleApp.Search {
 				writer.Dispose();
 			}
 		}
-		public static void DeleteFromLuceneIndex(SampleData dat) {
+		public static void ClearLuceneIndexRecord(int record_id) {
 			// init lucene
 			var analyzer = new StandardAnalyzer(Version.LUCENE_29);
 			using (var writer = new IndexWriter(_directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED)) {
 				// remove older index entry
-				var searchQuery = new TermQuery(new Term("Id", dat.Id.ToString()));
+				var searchQuery = new TermQuery(new Term("Id", record_id.ToString()));
 				writer.DeleteDocuments(searchQuery);
 
 				// close handles
@@ -164,7 +164,6 @@ namespace MvcLuceneSampleApp.Search {
 			}
 			return false;
 		}
-
 		private static void _addToLuceneIndex(SampleData dat, IndexWriter writer) {
 			// remove older index entry
 			var searchQuery = new TermQuery(new Term("Id", dat.Id.ToString()));
@@ -181,7 +180,6 @@ namespace MvcLuceneSampleApp.Search {
 			// add entry to index
 			writer.AddDocument(doc);
 		}
-
 
 	}
 }

@@ -45,5 +45,11 @@ namespace MvcLuceneSampleApp.Controllers {
 			return RedirectToAction("Index");
 		}
 
+		public ActionResult ClearIndexRecord(int id) {
+			LuceneSearch.ClearLuceneIndexRecord(id);
+			TempData["Result"] = "Search index record was deleted successfully!";
+			return RedirectToAction("Index");
+		}
+
 	}
 }

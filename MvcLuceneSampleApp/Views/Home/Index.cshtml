@@ -24,18 +24,19 @@
 			<span style="color: red;">@TempData["ResultFail"]</span>
 		</p>
 		
-		<p style="float: left; width: 300px;">
+		<p style="float: left; width: 400px;">
 		  <strong>All records in database</strong> (@Html.ActionLink("Create Index [+]", "CreateIndex"))
 			@foreach (var record in Model.AllSampleData) {
 				<br/><span>@record.Id, @record.Name, @record.Description</span>
 			}			
 		</p>
 		
-		<p style="float: left; width: 300px;">
+		<p style="float: left; width: 400px;">
 		  <strong>All records in search index</strong> (@Html.ActionLink("Clear Index [X]", "ClearIndex"))
 			@if (Model.AllSearchIndexData.Any()) {
 				foreach (var record in Model.AllSearchIndexData) {
-					<br/><span>@record.Id, @record.Name, @record.Description</span>
+					<br/><span>@record.Id, @record.Name, @record.Description &nbsp;&nbsp;&nbsp;</span>
+					@Html.ActionLink("Delete Record", "ClearIndexRecord", new { record.Id })
 				}
 			} else {
 				<text><br/>Index is empty.</text>
