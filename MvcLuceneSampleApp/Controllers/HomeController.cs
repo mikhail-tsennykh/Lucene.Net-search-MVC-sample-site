@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -10,9 +11,9 @@ namespace MvcLuceneSampleApp.Controllers {
 	public class HomeController : Controller {
 
 		public ActionResult Index(string searchTerm) {
-			//var search_results = !string.IsNullOrEmpty(searchTerm)
-			//                      ? LuceneSearch.SearchByAll(searchTerm)
-			//                      : LuceneSearch.GetAllIndexRecords();
+			if (!Directory.Exists(LuceneSearch._luceneDir))
+				Directory.CreateDirectory(LuceneSearch._luceneDir);
+
 			return View(new IndexViewModel {
 			                               	AllSampleData = SampleDataRepository.GetAll(),
 			                               	AllSearchIndexData = LuceneSearch.GetAllIndexRecords(),

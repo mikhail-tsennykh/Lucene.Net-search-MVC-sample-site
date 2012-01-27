@@ -14,7 +14,7 @@ using Version = Lucene.Net.Util.Version;
 namespace MvcLuceneSampleApp.Search {
 	public static class LuceneSearch {
 		// properties
-		private static string _luceneDir =
+		public static string _luceneDir =
 			Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "lucene_index");
 		private static FSDirectory _directoryTemp;
 		private static FSDirectory _directory {
