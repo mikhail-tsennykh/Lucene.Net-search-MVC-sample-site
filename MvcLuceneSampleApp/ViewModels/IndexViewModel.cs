@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using MvcLuceneSampleApp.Search;
 
 namespace MvcLuceneSampleApp.ViewModels {

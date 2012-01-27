@@ -44,7 +44,7 @@
 		<div style="clear: both;"></div>
 
 		<div>
-			<strong>Add new record to search index:</strong><br/>
+			<strong>Add/Update single record in the search index:</strong><br/>
 			@using (Html.BeginForm("AddToIndex", "Home")) {
 				@Html.LabelFor(m => m.SampleData.Id)
 				@Html.EditorFor(m => m.SampleData.Id)
@@ -55,7 +55,7 @@
 				@Html.LabelFor(m => m.SampleData.Description)
 				@Html.EditorFor(m => m.SampleData.Description)
 	 
-				<input type="submit" value="Add Record" />
+				<input type="submit" value="Add/Update Record" />
 			}
 		</div>
 		
