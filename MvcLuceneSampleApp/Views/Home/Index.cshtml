@@ -8,8 +8,14 @@
 <html>
 <head>
   <title>Lucene.Net ultra fast search for MVC or WebForms site => made easy!</title>
+	<script src="http://code.jquery.com/jquery.min.js"></script>
 	<style type="text/css">
-		div, p {padding: 3px 5px; margin-bottom: 30px;}
+		body {margin: 30px 100px;}
+		fieldset {padding: 13px 15px; margin-bottom: 30px;border: dotted 1px silver;}
+		table {border-spacing: 0;}
+		table th {padding: 3px 5px; text-align: left;background: grey;color: white;}
+		table td {padding: 3px 5px;}
+		.add_record p {float: left;}
 	</style>
 </head>
 <body>
@@ -18,64 +24,113 @@
 		<h2><a href="/">Lucene.Net ultra fast search for MVC or WebForms site => made easy!</a></h2>
 		
 		<h3>Simple Lucene.Net Usage Example Site</h3>
-
-		<p style="float: right;">
-			<span style="color: green;">@TempData["Result"]</span>
-			<span style="color: red;">@TempData["ResultFail"]</span>
-		</p>
 		
-		<p style="float: left; width: 400px;">
-		  <strong>All records in database</strong> (@Html.ActionLink("Create Index [+]", "CreateIndex"))
+		<fieldset style="float: left; width: 30%;">
+		  <legend>All records in database (@Html.ActionLink("Create Index [+]", "CreateIndex"))</legend> 
+			<table class="grid">
+				<tr>
+					<th>@Html.LabelFor(m => Model.SampleData.Id)</th>
+					<th>@Html.LabelFor(m => Model.SampleData.Name)</th>
+					<th>@Html.LabelFor(m => Model.SampleData.Description)</th>
+				</tr>
 			@foreach (var record in Model.AllSampleData) {
-				<br/><span>@record.Id, @record.Name, @record.Description</span>
-			}			
-		</p>
+				<tr>
+					<td>@record.Id</td>
+					<td>@record.Name</td>
+					<td>@record.Description</td>
+				</tr>
+			}		
+			</table>	
+		</fieldset>
 		
-		<p style="float: left; width: 400px;">
-		  <strong>All records in search index</strong> (@Html.ActionLink("Clear Index [X]", "ClearIndex"))
+		<fieldset style="float: left; width: 30%;">
+		  <legend>All records in search index (@Html.ActionLink("Clear Index [X]", "ClearIndex"))</legend> 
 			@if (Model.AllSearchIndexData.Any()) {
-				foreach (var record in Model.AllSearchIndexData) {
-					<br/><span>@record.Id, @record.Name, @record.Description &nbsp;&nbsp;&nbsp;</span>
-					@Html.ActionLink("Delete Record", "ClearIndexRecord", new { record.Id })
-				}
+				<table class="grid">
+					<tr>
+						<th>@Html.LabelFor(m => Model.SampleData.Id)</th>
+						<th>@Html.LabelFor(m => Model.SampleData.Name)</th>
+						<th>@Html.LabelFor(m => Model.SampleData.Description)</th>
+						<th></th>
+					</tr>
+				@foreach (var record in Model.AllSearchIndexData) {
+					<tr>
+						<td>@record.Id</td>
+						<td>@record.Name</td>
+						<td>@record.Description</td>
+						<td>@Html.ActionLink("Delete", "ClearIndexRecord", new { record.Id })</td>
+					</tr>
+				}		
+				</table>
 			} else {
 				<text><br/>Index is empty.</text>
 			}
-		</p>
+		</fieldset>
+		
+		<fieldset style="float: left; width: 30%;">
+			<legend>Messages</legend>
+			<span style="color: green;">@TempData["Result"]</span>
+			<span style="color: red;">@TempData["ResultFail"]</span>
+		</fieldset>
 		<div style="clear: both;"></div>
 
-		<div>
-			<strong>Add/Update single record in the search index:</strong><br/>
+		<fieldset class="add_record">
+			<legend>Add/Update search index record (use Id of existing one):</legend>
 			@using (Html.BeginForm("AddToIndex", "Home")) {
-				@Html.LabelFor(m => m.SampleData.Id)
-				@Html.EditorFor(m => m.SampleData.Id)
-
-				@Html.LabelFor(m => m.SampleData.Name)
-				@Html.EditorFor(m => m.SampleData.Name)
-
-				@Html.LabelFor(m => m.SampleData.Description)
-				@Html.EditorFor(m => m.SampleData.Description)
-	 
-				<input type="submit" value="Add/Update Record" />
+				<p>
+					@Html.LabelFor(m => m.SampleData.Id)<br/>
+					@Html.EditorFor(m => m.SampleData.Id)
+				</p>
+				<p>
+					@Html.LabelFor(m => m.SampleData.Name)<br/>
+					@Html.EditorFor(m => m.SampleData.Name)
+				</p>
+				<p>
+					@Html.LabelFor(m => m.SampleData.Description)<br/>
+					@Html.EditorFor(m => m.SampleData.Description)
+				</p>
+				<p>
+					<br/><input type="submit" value="Add/Update Record" />
+				</p>
 			}
-		</div>
+		</fieldset>
 		
-		<div>
-			<strong>Do the Search!</strong><br/>
-			@using (Html.BeginForm("SearchIndex", "Home")) {
-				@Html.LabelFor(m => m.SearchTerm)
-				@Html.EditorFor(m => m.SearchTerm)
-	 
+		<fieldset>
+			<legend>Search by full/partial Id, Name, or Description</legend>
+			@using (Html.BeginForm("Index", "Home")) {
+				@Html.TextBoxFor(m => m.SearchTerm, new { style="width:30%;" })
+
 				<input type="submit" value="Search" />
 			}
-		</div>
+		</fieldset>
 		
-		<div>
-			@foreach (var record in Model.SampleSearchResults) {
-				<p>@record.Id, @record.Name, @record.Description</p>
-			}
-		</div>
-        
+		@if (Model.SampleSearchResults.Any()) {
+			<fieldset>
+				<legend>Search Results</legend>
+				<table class="grid">
+					<tr>
+						<th>@Html.LabelFor(m => Model.SampleData.Id)</th>
+						<th>@Html.LabelFor(m => Model.SampleData.Name)</th>
+						<th>@Html.LabelFor(m => Model.SampleData.Description)</th>
+					</tr>
+				@foreach (var record in Model.SampleSearchResults) {
+					<tr>
+						<td>@record.Id</td>
+						<td>@record.Name</td>
+						<td>@record.Description</td>
+					</tr>
+				}		
+				</table>
+			</fieldset>
+		}
   </div>
+	
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$('#SearchTerm').focus();
+		  $('.grid tr:even').css("background", "silver");
+		});
+	</script>
+
 </body>
 </html>

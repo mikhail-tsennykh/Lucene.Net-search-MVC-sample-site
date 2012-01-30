@@ -9,7 +9,6 @@ namespace MvcLuceneSampleApp.Controllers {
 		public ActionResult Index(string searchTerm) {
 			if (!Directory.Exists(LuceneSearch._luceneDir))
 				Directory.CreateDirectory(LuceneSearch._luceneDir);
-
 			return View(new IndexViewModel {
 			                               	AllSampleData = SampleDataRepository.GetAll(),
 			                               	AllSearchIndexData = LuceneSearch.GetAllIndexRecords(),
@@ -32,11 +31,6 @@ namespace MvcLuceneSampleApp.Controllers {
 			return RedirectToAction("Index");
 		}
 
-		[HttpPost]
-		public ActionResult SearchIndex(string searchTerm) {
-			return RedirectToAction("Index", new {searchTerm});
-		}
-
 		public ActionResult ClearIndex() {
 			if (LuceneSearch.ClearLuceneIndex())
 				TempData["Result"] = "Search index was cleared successfully!";
@@ -50,6 +44,7 @@ namespace MvcLuceneSampleApp.Controllers {
 			TempData["Result"] = "Search index record was deleted successfully!";
 			return RedirectToAction("Index");
 		}
+
 
 	}
 }

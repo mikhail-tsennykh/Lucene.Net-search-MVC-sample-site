@@ -26,7 +26,7 @@ namespace MvcLuceneSampleApp.Search {
 				return _directoryTemp;
 			}
 		}
-
+		
 
 		// search methods
 		public static IEnumerable<SampleData> GetAllIndexRecords() {
@@ -43,7 +43,7 @@ namespace MvcLuceneSampleApp.Search {
 			reader.Dispose();
 			searcher.Close();
 			searcher.Dispose();
-			return _mapLuceneDocumentsToDataList(docs);
+			return _mapLuceneToDataList(docs);
 		}
 		public static IEnumerable<SampleData> SearchById(string input) {
 			return !string.IsNullOrEmpty(input)
@@ -55,9 +55,9 @@ namespace MvcLuceneSampleApp.Search {
 			       	? _search(input.Replace("-", " ") + "*")
 			       	: new List<SampleData>();
 		}
+		
 
-
-		// search main
+		// main search method
 		private static IEnumerable<SampleData> _search(string searchQuery, string searchField = "") {
 			// validation
 			if (string.IsNullOrEmpty(searchQuery.Replace("*", "").Replace("?", ""))) return new List<SampleData>();
@@ -72,7 +72,7 @@ namespace MvcLuceneSampleApp.Search {
 					var parser = new QueryParser(Version.LUCENE_29, searchField, analyzer);
 					var query = parser.Parse(searchQuery.Trim());
 					var hits = searcher.Search(query, hits_limit).ScoreDocs;
-					var results = _mapLuceneSearchResultsToDataList(hits, searcher);
+					var results = _mapLuceneToDataList(hits, searcher);
 					searcher.Close();
 					searcher.Dispose();
 					return results;
@@ -83,44 +83,40 @@ namespace MvcLuceneSampleApp.Search {
 				    (Version.LUCENE_29, new[] { "Id", "Name", "Description" }, analyzer);
 				  var query = parser.Parse(searchQuery.Trim());
 				  var hits = searcher.Search(query, null, hits_limit, Sort.RELEVANCE).ScoreDocs;
-				  var results = _mapLuceneSearchResultsToDataList(hits, searcher);
+				  var results = _mapLuceneToDataList(hits, searcher);
 				  searcher.Close(); searcher.Dispose();
 				  return results;
 				}
 			}
 		}
+		
 
-
-		// map fields
-		private static IEnumerable<SampleData> _mapLuceneDocumentsToDataList(IEnumerable<Document> hits) {
+		// map Lucene search index to data
+		private static IEnumerable<SampleData> _mapLuceneToDataList(IEnumerable<Document> hits) {
 			return hits.Select(_mapLuceneDocumentToData).ToList();
 		}
-		private static IEnumerable<SampleData> _mapLuceneSearchResultsToDataList(IEnumerable<ScoreDoc> hits, IndexSearcher searcher) {
+		private static IEnumerable<SampleData> _mapLuceneToDataList(IEnumerable<ScoreDoc> hits, IndexSearcher searcher) {
 			return hits.Select(hit => _mapLuceneDocumentToData(searcher.Doc(hit.doc))).ToList();
 		}
-		private static SampleData _mapLuceneDocumentToData(Document h) {
-			var r = new SampleData();
-
-			// db fields
-			r.Id = Convert.ToInt32(h.Get("Id"));
-			r.Name = h.Get("Name");
-			r.Description = h.Get("Description");
-
-			// get results
-			return r;
+		private static SampleData _mapLuceneDocumentToData(Document doc) {
+			return new SampleData {
+			                      	Id = Convert.ToInt32(doc.Get("Id")),
+			                      	Name = doc.Get("Name"),
+			                      	Description = doc.Get("Description")
+			                      };
 		}
+		
 
-
-		// add/update/clear lucene index
-		public static void AddUpdateLuceneIndex(SampleData dat) {
-			AddUpdateLuceneIndex(new List<SampleData> {dat});
+		// add/update/clear search index data 
+		public static void AddUpdateLuceneIndex(SampleData sampleData) {
+			AddUpdateLuceneIndex(new List<SampleData> {sampleData});
 		}
-		public static void AddUpdateLuceneIndex(IEnumerable<SampleData> dat) {
+		public static void AddUpdateLuceneIndex(IEnumerable<SampleData> sampleDatas) {
 			// init lucene
 			var analyzer = new StandardAnalyzer(Version.LUCENE_29);
 			using (var writer = new IndexWriter(_directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED)) {
 				// add data to lucene search index (replaces older entries if any)
-				foreach (var r in dat) _addToLuceneIndex(r, writer);
+				foreach (var sampleData in sampleDatas) _addToLuceneIndex(sampleData, writer);
 
 				// close handles
 				writer.Optimize();
@@ -164,18 +160,18 @@ namespace MvcLuceneSampleApp.Search {
 			}
 			return false;
 		}
-		private static void _addToLuceneIndex(SampleData dat, IndexWriter writer) {
+		private static void _addToLuceneIndex(SampleData sampleData, IndexWriter writer) {
 			// remove older index entry
-			var searchQuery = new TermQuery(new Term("Id", dat.Id.ToString()));
+			var searchQuery = new TermQuery(new Term("Id", sampleData.Id.ToString()));
 			writer.DeleteDocuments(searchQuery);
 
 			// add new index entry
 			var doc = new Document();
 
 			// add lucene fields mapped to db fields
-			doc.Add(new Field("Id", dat.Id.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-			doc.Add(new Field("Name", dat.Name, Field.Store.YES, Field.Index.ANALYZED));
-			doc.Add(new Field("Description", dat.Description, Field.Store.YES, Field.Index.ANALYZED));
+			doc.Add(new Field("Id", sampleData.Id.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+			doc.Add(new Field("Name", sampleData.Name, Field.Store.YES, Field.Index.ANALYZED));
+			doc.Add(new Field("Description", sampleData.Description, Field.Store.YES, Field.Index.ANALYZED));
 
 			// add entry to index
 			writer.AddDocument(doc);
