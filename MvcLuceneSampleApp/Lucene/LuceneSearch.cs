@@ -45,17 +45,13 @@ namespace MvcLuceneSampleApp.Search {
 			searcher.Dispose();
 			return _mapLuceneToDataList(docs);
 		}
-		public static IEnumerable<SampleData> SearchById(string input) {
-			return !string.IsNullOrEmpty(input)
-							? _search(input + "*", "Id")
-							: new List<SampleData>();
+		public static IEnumerable<SampleData> Search(string input, string fieldName = "") {
+			if (string.IsNullOrEmpty(input)) return new List<SampleData>();
+			input = input.Replace("-", " ").Trim() + "*";
+			if (input.IndexOf("*") == 0) input = input.Replace("*", "");
+			return _search(input, fieldName);
 		}
-		public static IEnumerable<SampleData> SearchByAll(string input) {
-			return !string.IsNullOrEmpty(input)
-			       	? _search(input.Replace("-", " ") + "*")
-			       	: new List<SampleData>();
-		}
-		
+
 
 		// main search method
 		private static IEnumerable<SampleData> _search(string searchQuery, string searchField = "") {
@@ -77,19 +73,20 @@ namespace MvcLuceneSampleApp.Search {
 					searcher.Dispose();
 					return results;
 				}
-				// search by multiple fields (ordered by RELEVANCE)
+					// search by multiple fields (ordered by RELEVANCE)
 				else {
-				  var parser = new MultiFieldQueryParser
-				    (Version.LUCENE_29, new[] { "Id", "Name", "Description" }, analyzer);
-				  var query = parser.Parse(searchQuery.Trim());
-				  var hits = searcher.Search(query, null, hits_limit, Sort.RELEVANCE).ScoreDocs;
-				  var results = _mapLuceneToDataList(hits, searcher);
-				  searcher.Close(); searcher.Dispose();
-				  return results;
+					var parser = new MultiFieldQueryParser
+						(Version.LUCENE_29, new[] {"Id", "Name", "Description"}, analyzer);
+					var query = parser.Parse(searchQuery.Trim());
+					var hits = searcher.Search(query, null, hits_limit, Sort.INDEXORDER).ScoreDocs;
+					var results = _mapLuceneToDataList(hits, searcher);
+					searcher.Close();
+					searcher.Dispose();
+					return results;
 				}
 			}
 		}
-		
+
 
 		// map Lucene search index to data
 		private static IEnumerable<SampleData> _mapLuceneToDataList(IEnumerable<Document> hits) {

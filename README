@@ -1,7 +1,13 @@
-Simple Lucene.Net Usage Example Site
 
-no Readme yet.
-
-This sample is for upcoming CodeProject article ->
-
-Lucene.Net ultra fast search for MVC or WebForms site => made easy!
+/////////////////////////////////////////////////////////////////////////////
+//
+// This is a simple Lucene.Net Usage Example Site
+// written for MVC3 and Visual Studio 2010
+//
+// This project is an illustration for my CodeProject.com article:
+// "Lucene.Net ultra fast search for MVC or WebForms site => made easy!"
+//
+// by devnoob, 2011-2012
+// http://www.codeproject.com/members/devnoob
+//
+/////////////////////////////////////////////////////////////////////////////

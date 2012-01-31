@@ -97,8 +97,15 @@
 		
 		<fieldset>
 			<legend>Search by full/partial Id, Name, or Description</legend>
-			@using (Html.BeginForm("Index", "Home")) {
+			@using (Html.BeginForm("Search", "Home")) {
 				@Html.TextBoxFor(m => m.SearchTerm, new { style="width:30%;" })
+				@Html.DropDownListFor(m => m.SearchField,
+					new List<SelectListItem> {
+						new SelectListItem { Text = "(All Fields)", Value = "" },
+						new SelectListItem { Text = "Id", Value = "Id"  },
+						new SelectListItem { Text = "Name", Value = "Name"},
+						new SelectListItem { Text = "Description", Value = "Description" },
+					})
 
 				<input type="submit" value="Search" />
 			}

@@ -8,5 +8,6 @@ namespace MvcLuceneSampleApp.ViewModels {
 		public IEnumerable<SampleData> AllSearchIndexData { get; set; }
 		public IEnumerable<SampleData> SampleSearchResults { get; set; }
 		public string SearchTerm { get; set; }
+		public string SearchField { get; set; }
 	}
 }
