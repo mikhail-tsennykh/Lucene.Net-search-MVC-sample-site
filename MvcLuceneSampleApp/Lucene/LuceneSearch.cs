@@ -47,7 +47,7 @@ namespace MvcLuceneSampleApp.Search {
 		}
 		public static IEnumerable<SampleData> Search(string input, string fieldName = "") {
 			if (string.IsNullOrEmpty(input)) return new List<SampleData>();
-			input = input.Replace("-", " ").Trim() + "*";
+			input = input.Replace("-", " ").Replace("\"", "").Trim() + "*";
 			if (input.IndexOf("*") == 0) input = input.Replace("*", "");
 			return _search(input, fieldName);
 		}
@@ -73,7 +73,7 @@ namespace MvcLuceneSampleApp.Search {
 					searcher.Dispose();
 					return results;
 				}
-					// search by multiple fields (ordered by RELEVANCE)
+				// search by multiple fields (ordered by RELEVANCE)
 				else {
 					var parser = new MultiFieldQueryParser
 						(Version.LUCENE_29, new[] {"Id", "Name", "Description"}, analyzer);
