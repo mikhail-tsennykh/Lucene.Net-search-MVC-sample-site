@@ -1,0 +1,23 @@
+﻿
+// Old method of clearing entire lucene index by deleting all index files 
+// removed on 2/7/2012
+public static bool ClearLuceneIndex() {
+	if (!System.IO.Directory.Exists(_luceneDir)) return false;
+	var files = _directory.ListAll();
+	var isLocked = false;
+	foreach (var file in files) {
+		try {
+			using (var fs = File.Open(Path.Combine(_luceneDir, file), FileMode.Open, FileAccess.Read, FileShare.None)) {
+			  fs.Close();
+			}
+		}
+		catch (Exception) {
+			isLocked = true;
+		}
+	}
+	if (!isLocked) {
+		foreach (var file in files) _directory.DeleteFile(file);
+		return true;
+	}
+	return false;
+}

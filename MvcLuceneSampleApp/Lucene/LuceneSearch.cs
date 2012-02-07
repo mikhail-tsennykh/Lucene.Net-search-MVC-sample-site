@@ -138,24 +138,22 @@ namespace MvcLuceneSampleApp.Search {
 			}
 		}
 		public static bool ClearLuceneIndex() {
-			if (!System.IO.Directory.Exists(_luceneDir)) return false;
-			var files = _directory.ListAll();
-			var isLocked = false;
-			foreach (var file in files) {
-				try {
-					using (var fs = File.Open(Path.Combine(_luceneDir, file), FileMode.Open, FileAccess.Read, FileShare.None)) {
-						fs.Close();
-					}
-				}
-				catch (Exception) {
-					isLocked = true;
+			try {
+				var analyzer = new StandardAnalyzer(Version.LUCENE_29);
+				using (var writer = new IndexWriter(_directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED)) {
+					// remove older index entries
+					writer.DeleteAll();
+
+					// close handles
+					analyzer.Close();
+					writer.Close();
+					writer.Dispose();
 				}
 			}
-			if (!isLocked) {
-				foreach (var file in files) _directory.DeleteFile(file);
-				return true;
+			catch (Exception) {
+				return false;
 			}
-			return false;
+			return true;
 		}
 		private static void _addToLuceneIndex(SampleData sampleData, IndexWriter writer) {
 			// remove older index entry

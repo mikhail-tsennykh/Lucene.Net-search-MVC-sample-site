@@ -1,147 +1,127 @@
 ﻿@model MvcLuceneSampleApp.ViewModels.IndexViewModel
-@{
-    Layout = null;
+		
+<fieldset class="content_left" style="width: 30%;">
+	<legend>All records in database (@Html.ActionLink("Create Index [+]", "CreateIndex"))</legend> 
+	<table class="grid">
+		<tr>
+			<th>@Html.LabelFor(m => Model.SampleData.Id)</th>
+			<th>@Html.LabelFor(m => Model.SampleData.Name)</th>
+			<th>@Html.LabelFor(m => Model.SampleData.Description)</th>
+		</tr>
+	@foreach (var record in Model.AllSampleData) {
+		<tr>
+			<td>@record.Id</td>
+			<td>@record.Name</td>
+			<td>@record.Description</td>
+		</tr>
+	}		
+	</table>	
+</fieldset>
+		
+<fieldset class="content_left" style="width: 30%;">
+	<legend>All records in search index (@Html.ActionLink("Clear Index [X]", "ClearIndex"))</legend> 
+	@if (Model.AllSearchIndexData.Any()) {
+		<table class="grid">
+			<tr>
+				<th>@Html.LabelFor(m => Model.SampleData.Id)</th>
+				<th>@Html.LabelFor(m => Model.SampleData.Name)</th>
+				<th>@Html.LabelFor(m => Model.SampleData.Description)</th>
+				<th></th>
+			</tr>
+		@foreach (var record in Model.AllSearchIndexData) {
+			<tr>
+				<td>@record.Id</td>
+				<td>@record.Name</td>
+				<td>@record.Description</td>
+				<td>@Html.ActionLink("Delete", "ClearIndexRecord", new { record.Id })</td>
+			</tr>
+		}		
+		</table>
+	} else {
+		<text><br/>Index is empty.</text>
+	}
+</fieldset>
+		
+<fieldset class="content_left" style="width: 30%;">
+	<legend>Messages</legend>
+	<span style="color: green;">@TempData["Result"]</span>
+	<span style="color: red;">@TempData["ResultFail"]</span>
+</fieldset>
+<div class="clear"></div>
+
+<fieldset class="add_record">
+	<legend>Add/Update search index record (use Id of existing one):</legend>
+	@using (Html.BeginForm("AddToIndex", "Home")) {
+		<p>
+			@Html.LabelFor(m => m.SampleData.Id)<br/>
+			@Html.EditorFor(m => m.SampleData.Id)
+		</p>
+		<p>
+			@Html.LabelFor(m => m.SampleData.Name)<br/>
+			@Html.EditorFor(m => m.SampleData.Name)
+		</p>
+		<p>
+			@Html.LabelFor(m => m.SampleData.Description)<br/>
+			@Html.EditorFor(m => m.SampleData.Description)
+		</p>
+		<p>
+			<br/><input type="submit" value="Add/Update Record" />
+		</p>
+	}
+</fieldset>
+		
+<fieldset>
+	<legend>Search by full/partial Id, Name, or Description</legend>
+	<p>Also try these searches: <em>"1 3 5", "City", "Russia India"</em></p>
+
+	@using (Html.BeginForm("Search", "Home")) {
+		@Html.TextBoxFor(m => m.SearchTerm, new { style="width:30%;" })
+		@Html.DropDownListFor(m => m.SearchField,
+			new List<SelectListItem> {
+				new SelectListItem { Text = "(All Fields)", Value = "" },
+				new SelectListItem { Text = "Id", Value = "Id"  },
+				new SelectListItem { Text = "Name", Value = "Name"},
+				new SelectListItem { Text = "Description", Value = "Description" },
+			})
+
+		<input type="submit" value="Search" />
+	}
+	<p>
+		<strong>Note:</strong>
+		if you don't like the ordering of Lucene results,
+		you can always reorder them via <strong>LINQ</strong>:
+		<pre style="width: 200px;" class="cs">*.OrderBy(x => x.SMTH)</pre>
+	</p>
+</fieldset>
+		
+@if (Model.SampleSearchResults.Any()) {
+	<fieldset>
+		<legend>Search Results</legend>
+		<table class="grid">
+			<tr>
+				<th>@Html.LabelFor(m => Model.SampleData.Id)</th>
+				<th>@Html.LabelFor(m => Model.SampleData.Name)</th>
+				<th>@Html.LabelFor(m => Model.SampleData.Description)</th>
+			</tr>
+		@foreach (var record in Model.SampleSearchResults) {
+			<tr>
+				<td>@record.Id</td>
+				<td>@record.Name</td>
+				<td>@record.Description</td>
+			</tr>
+		}		
+		</table>
+	</fieldset>
 }
 
-<!DOCTYPE html>
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('#SearchTerm').focus();
+		$('.grid tr:even').css("background", "silver");
 
-<html>
-<head>
-  <title>Lucene.Net ultra fast search for MVC or WebForms site => made easy!</title>
-	<script src="http://code.jquery.com/jquery.min.js"></script>
-	<link href="@Url.Content("~/Content/style.css")" rel="stylesheet" type="text/css" />
-</head>
-<body>
-	<div>
-			
-		<h2><a href="/">Lucene.Net ultra fast search for MVC or WebForms site => made easy!</a></h2>
-		
-		<h3>Simple Lucene.Net Usage Example Site</h3>
-		
-		<fieldset class="content_left" style="width: 30%;">
-		  <legend>All records in database (@Html.ActionLink("Create Index [+]", "CreateIndex"))</legend> 
-			<table class="grid">
-				<tr>
-					<th>@Html.LabelFor(m => Model.SampleData.Id)</th>
-					<th>@Html.LabelFor(m => Model.SampleData.Name)</th>
-					<th>@Html.LabelFor(m => Model.SampleData.Description)</th>
-				</tr>
-			@foreach (var record in Model.AllSampleData) {
-				<tr>
-					<td>@record.Id</td>
-					<td>@record.Name</td>
-					<td>@record.Description</td>
-				</tr>
-			}		
-			</table>	
-		</fieldset>
-		
-		<fieldset class="content_left" style="width: 30%;">
-		  <legend>All records in search index (@Html.ActionLink("Clear Index [X]", "ClearIndex"))</legend> 
-			@if (Model.AllSearchIndexData.Any()) {
-				<table class="grid">
-					<tr>
-						<th>@Html.LabelFor(m => Model.SampleData.Id)</th>
-						<th>@Html.LabelFor(m => Model.SampleData.Name)</th>
-						<th>@Html.LabelFor(m => Model.SampleData.Description)</th>
-						<th></th>
-					</tr>
-				@foreach (var record in Model.AllSearchIndexData) {
-					<tr>
-						<td>@record.Id</td>
-						<td>@record.Name</td>
-						<td>@record.Description</td>
-						<td>@Html.ActionLink("Delete", "ClearIndexRecord", new { record.Id })</td>
-					</tr>
-				}		
-				</table>
-			} else {
-				<text><br/>Index is empty.</text>
-			}
-		</fieldset>
-		
-		<fieldset class="content_left" style="width: 30%;">
-			<legend>Messages</legend>
-			<span style="color: green;">@TempData["Result"]</span>
-			<span style="color: red;">@TempData["ResultFail"]</span>
-		</fieldset>
-		<div class="clear"></div>
-
-		<fieldset class="add_record">
-			<legend>Add/Update search index record (use Id of existing one):</legend>
-			@using (Html.BeginForm("AddToIndex", "Home")) {
-				<p>
-					@Html.LabelFor(m => m.SampleData.Id)<br/>
-					@Html.EditorFor(m => m.SampleData.Id)
-				</p>
-				<p>
-					@Html.LabelFor(m => m.SampleData.Name)<br/>
-					@Html.EditorFor(m => m.SampleData.Name)
-				</p>
-				<p>
-					@Html.LabelFor(m => m.SampleData.Description)<br/>
-					@Html.EditorFor(m => m.SampleData.Description)
-				</p>
-				<p>
-					<br/><input type="submit" value="Add/Update Record" />
-				</p>
-			}
-		</fieldset>
-		
-		<fieldset>
-			<legend>Search by full/partial Id, Name, or Description</legend>
-			<p>Also try these searches: <em>"1 3 5", "City", "Russia India"</em></p>
-
-			@using (Html.BeginForm("Search", "Home")) {
-				@Html.TextBoxFor(m => m.SearchTerm, new { style="width:30%;" })
-				@Html.DropDownListFor(m => m.SearchField,
-					new List<SelectListItem> {
-						new SelectListItem { Text = "(All Fields)", Value = "" },
-						new SelectListItem { Text = "Id", Value = "Id"  },
-						new SelectListItem { Text = "Name", Value = "Name"},
-						new SelectListItem { Text = "Description", Value = "Description" },
-					})
-
-				<input type="submit" value="Search" />
-			}
-			<p>
-			  <strong>Note:</strong> if you don't like the ordering of Lucene results,
-				you can always reorder them via LINQ's <code>*.OrderBy(x => x.SMTH)</code>
-			</p>
-		</fieldset>
-		
-		@if (Model.SampleSearchResults.Any()) {
-			<fieldset>
-				<legend>Search Results</legend>
-				<table class="grid">
-					<tr>
-						<th>@Html.LabelFor(m => Model.SampleData.Id)</th>
-						<th>@Html.LabelFor(m => Model.SampleData.Name)</th>
-						<th>@Html.LabelFor(m => Model.SampleData.Description)</th>
-					</tr>
-				@foreach (var record in Model.SampleSearchResults) {
-					<tr>
-						<td>@record.Id</td>
-						<td>@record.Name</td>
-						<td>@record.Description</td>
-					</tr>
-				}		
-				</table>
-			</fieldset>
-		}
-
-	</div>
-
-	<div id="footer">
-		By <a target="_blank" href="http://www.codeproject.com/Members/devnoob">Mikhail T. (devnoob)</a>, 2012
-	</div>
-
-	<script type="text/javascript">
-		$(document).ready(function () {
-			$('#SearchTerm').focus();
-		  $('.grid tr:even').css("background", "silver");
-		});
-	</script>
-
-</body>
-</html>
+		// snippet code highlighter
+		//$("pre.html").snippet("html", { style: "acid", clipboard: "../../Scripts/ZeroClipboard.swf", showNum: false });
+		$("pre.cs").snippet("csharp", { style: "acid", clipboard: "../../Scripts/ZeroClipboard.swf", showNum: false });
+		//$("pre.css").snippet("css", { style: "peachpuff", clipboard: "../../Scripts/ZeroClipboard.swf", showNum: false });
+	});
+</script>

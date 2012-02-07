@@ -1,0 +1,29 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Index</title>
+	<link href="@Url.Content("~/Content/style.css")" rel="stylesheet" type="text/css" />
+	<link href="../../Content/jquery.snippet.min.css" rel="stylesheet" type="text/css" />
+	<script src="http://code.jquery.com/jquery.min.js"></script>
+	<script src="../../Scripts/jquery.snippet.min.js" type="text/javascript"></script>
+</head>
+<body>
+	<div class="header">
+		<h2><a href="/">Lucene.Net ultra fast search for MVC or WebForms site => made easy!</a></h2>
+		<h3>Simple Lucene.Net Usage Example Site</h3>
+	</div>
+
+  <div class="wrapper">
+		@RenderBody()
+	</div>
+	
+	<div id="footer">
+		By <a target="_blank" href="http://www.codeproject.com/Members/devnoob">Mikhail T. (devnoob)</a>, 2012
+	</div>
+</body>
+</html>
