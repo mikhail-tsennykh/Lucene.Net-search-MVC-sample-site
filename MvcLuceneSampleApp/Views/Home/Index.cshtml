@@ -86,12 +86,16 @@
 
 		<input type="submit" value="Search" />
 	}
-	<p>
-		<strong>Note:</strong>
+		
+	<div style="margin: 16px 30px 0 0; " class="content_left">
+		<strong>Note:</strong><br/>
 		if you don't like the ordering of Lucene results,
 		you can always reorder them via <strong>LINQ</strong>:
+	</div>
+	<div class="content_left">
 		<pre style="width: 200px;" class="cs">*.OrderBy(x => x.SMTH)</pre>
-	</p>
+	</div>
+	<div class="clear"></div>
 </fieldset>
 		
 @if (Model.SampleSearchResults.Any()) {
