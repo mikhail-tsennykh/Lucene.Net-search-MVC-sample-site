@@ -1,8 +1,0 @@
-C:\____CODE\MvcLuceneSampleApp\MvcLuceneSampleApp\bin\MvcLuceneSampleApp.dll
-C:\____CODE\MvcLuceneSampleApp\MvcLuceneSampleApp\bin\MvcLuceneSampleApp.pdb
-C:\____CODE\MvcLuceneSampleApp\MvcLuceneSampleApp\obj\Debug\ResolveAssemblyReference.cache
-C:\____CODE\MvcLuceneSampleApp\MvcLuceneSampleApp\obj\Debug\MvcLuceneSampleApp.dll
-C:\____CODE\MvcLuceneSampleApp\MvcLuceneSampleApp\obj\Debug\MvcLuceneSampleApp.pdb
-C:\____CODE\MvcLuceneSampleApp\MvcLuceneSampleApp\bin\ICSharpCode.SharpZipLib.dll
-C:\____CODE\MvcLuceneSampleApp\MvcLuceneSampleApp\bin\Lucene.Net.dll
-C:\____CODE\MvcLuceneSampleApp\MvcLuceneSampleApp\bin\Lucene.Net.xml
