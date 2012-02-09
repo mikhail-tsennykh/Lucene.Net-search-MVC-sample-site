@@ -1,6 +1,6 @@
 ﻿@model MvcLuceneSampleApp.ViewModels.IndexViewModel
 		
-<fieldset class="content_left" style="width: 30%;">
+<fieldset class="content_left" style="width: 25%;">
 	<legend>All records in database (@Html.ActionLink("Create Index [+]", "CreateIndex"))</legend> 
 	<table class="grid">
 		<tr>
@@ -18,8 +18,12 @@
 	</table>	
 </fieldset>
 		
-<fieldset class="content_left" style="width: 30%;">
-	<legend>All records in search index (@Html.ActionLink("Clear Index [X]", "ClearIndex"))</legend> 
+<fieldset class="content_left" style="width: 35%;">
+	<legend>
+		All records in search index
+		(@Html.ActionLink("Optimize", "OptimizeIndex"))
+		(@Html.ActionLink("Clear [X]", "ClearIndex"))
+	</legend> 
 	@if (Model.AllSearchIndexData.Any()) {
 		<table class="grid">
 			<tr>
@@ -38,7 +42,7 @@
 		}		
 		</table>
 	} else {
-		<text><br/>Index is empty.</text>
+		<text><br/>Index is empty...<br/></text>
 	}
 </fieldset>
 		

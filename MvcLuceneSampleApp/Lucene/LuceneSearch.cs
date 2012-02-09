@@ -69,6 +69,7 @@ namespace MvcLuceneSampleApp.Search {
 					var query = parser.Parse(searchQuery.Trim());
 					var hits = searcher.Search(query, hits_limit).ScoreDocs;
 					var results = _mapLuceneToDataList(hits, searcher);
+					analyzer.Close();
 					searcher.Close();
 					searcher.Dispose();
 					return results;
@@ -80,6 +81,7 @@ namespace MvcLuceneSampleApp.Search {
 					var query = parser.Parse(searchQuery.Trim());
 					var hits = searcher.Search(query, null, hits_limit, Sort.INDEXORDER).ScoreDocs;
 					var results = _mapLuceneToDataList(hits, searcher);
+					analyzer.Close();
 					searcher.Close();
 					searcher.Dispose();
 					return results;
@@ -116,8 +118,7 @@ namespace MvcLuceneSampleApp.Search {
 				foreach (var sampleData in sampleDatas) _addToLuceneIndex(sampleData, writer);
 
 				// close handles
-				writer.Optimize();
-				writer.Commit();
+				analyzer.Close();
 				writer.Close();
 				writer.Dispose();
 			}
@@ -131,8 +132,7 @@ namespace MvcLuceneSampleApp.Search {
 				writer.DeleteDocuments(searchQuery);
 
 				// close handles
-				writer.Optimize();
-				writer.Commit();
+				analyzer.Close();
 				writer.Close();
 				writer.Dispose();
 			}
@@ -154,6 +154,15 @@ namespace MvcLuceneSampleApp.Search {
 				return false;
 			}
 			return true;
+		}
+		public static void Optimize() {
+			var analyzer = new StandardAnalyzer(Version.LUCENE_29);
+			using (var writer = new IndexWriter(_directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED)) {
+				analyzer.Close();
+				writer.Optimize();
+				writer.Close();
+				writer.Dispose();
+			}
 		}
 		private static void _addToLuceneIndex(SampleData sampleData, IndexWriter writer) {
 			// remove older index entry

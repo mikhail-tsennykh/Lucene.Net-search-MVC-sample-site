@@ -56,5 +56,11 @@ namespace MvcLuceneSampleApp.Controllers {
 			return RedirectToAction("Index");
 		}
 
+		public ActionResult OptimizeIndex() {
+			LuceneSearch.Optimize();
+			TempData["Result"] = "Search index was optimized successfully!";
+			return RedirectToAction("Index");
+		}
+
 	}
 }

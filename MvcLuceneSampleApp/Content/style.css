@@ -1,11 +1,12 @@
 ﻿
 body {margin: 30px 100px; font-family: Trebuchet MS, Helvetica, Sans-Serif; font-size: small;}
-fieldset {padding: 0px 15px 13px 15px; margin-bottom: 30px;border: dotted 1px silver;}
+fieldset {padding: 13px 15px 13px 15px; margin-bottom: 30px;border: dotted 1px silver;}
 fieldset legend {font-weight: bold;}
 table {border-spacing: 0;}
 table th {padding: 3px 5px; text-align: left;background: grey;color: white;}
 table td {padding: 3px 5px;}
 
+p { margin-top: 0;}
 .add_record p {float: left;}
 .content_left {float: left;}
 .content_right {float: right;}
