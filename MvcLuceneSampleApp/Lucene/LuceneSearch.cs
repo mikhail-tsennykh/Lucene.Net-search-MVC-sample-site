@@ -47,9 +47,15 @@ namespace MvcLuceneSampleApp.Search {
 		}
 		public static IEnumerable<SampleData> Search(string input, string fieldName = "") {
 			if (string.IsNullOrEmpty(input)) return new List<SampleData>();
-			input = input.Replace("-", " ").Replace("\"", "").Trim() + "*";
-			if (input.IndexOf("*") == 0) input = input.Replace("*", "");
+			
+			var terms = input.Trim().Replace("-", " ").Split(' ')
+				.Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim() + "*");
+			input = string.Join(" ", terms);
+
 			return _search(input, fieldName);
+		}
+		public static IEnumerable<SampleData> SearchDefault(string input, string fieldName = "") {
+			return string.IsNullOrEmpty(input) ? new List<SampleData>() : _search(input, fieldName);
 		}
 
 
@@ -66,7 +72,7 @@ namespace MvcLuceneSampleApp.Search {
 				// search by single field
 				if (!string.IsNullOrEmpty(searchField)) {
 					var parser = new QueryParser(Version.LUCENE_29, searchField, analyzer);
-					var query = parser.Parse(searchQuery.Trim());
+					var query = parseQuery(searchQuery, parser);
 					var hits = searcher.Search(query, hits_limit).ScoreDocs;
 					var results = _mapLuceneToDataList(hits, searcher);
 					analyzer.Close();
@@ -78,7 +84,7 @@ namespace MvcLuceneSampleApp.Search {
 				else {
 					var parser = new MultiFieldQueryParser
 						(Version.LUCENE_29, new[] {"Id", "Name", "Description"}, analyzer);
-					var query = parser.Parse(searchQuery.Trim());
+					var query = parseQuery(searchQuery, parser);
 					var hits = searcher.Search(query, null, hits_limit, Sort.INDEXORDER).ScoreDocs;
 					var results = _mapLuceneToDataList(hits, searcher);
 					analyzer.Close();
@@ -87,6 +93,16 @@ namespace MvcLuceneSampleApp.Search {
 					return results;
 				}
 			}
+		}
+		private static Query parseQuery(string searchQuery, QueryParser parser) {
+			Query query;
+			try {
+				query = parser.Parse(searchQuery.Trim());
+			}
+			catch (ParseException) {
+				query = parser.Parse(QueryParser.Escape(searchQuery.Trim()));
+			}
+			return query;
 		}
 
 

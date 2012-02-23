@@ -18,7 +18,7 @@
 	</table>	
 </fieldset>
 		
-<fieldset class="content_left" style="width: 35%;">
+<fieldset class="content_left" style="width: 30%;">
 	<legend>
 		All records in search index
 		(@Html.ActionLink("Optimize", "OptimizeIndex"))
@@ -53,7 +53,7 @@
 </fieldset>
 <div class="clear"></div>
 
-<fieldset class="add_record">
+<fieldset style="width:45%;" class="add_record content_left">
 	<legend>Add/Update search index record (use Id of existing one):</legend>
 	@using (Html.BeginForm("AddToIndex", "Home")) {
 		<p>
@@ -68,29 +68,12 @@
 			@Html.LabelFor(m => m.SampleData.Description)<br/>
 			@Html.EditorFor(m => m.SampleData.Description)
 		</p>
-		<p>
-			<br/><input type="submit" value="Add/Update Record" />
-		</p>
+		<input type="submit" value="Add/Update Record" />
 	}
 </fieldset>
-		
-<fieldset>
-	<legend>Search by full/partial Id, Name, or Description</legend>
-	<p>Also try these searches: <em>"1 3 5", "City", "Russia India"</em></p>
 
-	@using (Html.BeginForm("Search", "Home")) {
-		@Html.TextBoxFor(m => m.SearchTerm, new { style="width:30%;" })
-		@Html.DropDownListFor(m => m.SearchField,
-			new List<SelectListItem> {
-				new SelectListItem { Text = "(All Fields)", Value = "" },
-				new SelectListItem { Text = "Id", Value = "Id"  },
-				new SelectListItem { Text = "Name", Value = "Name"},
-				new SelectListItem { Text = "Description", Value = "Description" },
-			})
-
-		<input type="submit" value="Search" />
-	}
-		
+<fieldset style="width:45%;" class="content_left">
+	<legend>Tip:</legend>
 	<div style="margin: 16px 30px 0 0; " class="content_left">
 		<strong>Note:</strong><br/>
 		if you don't like the ordering of Lucene results,
@@ -100,7 +83,33 @@
 		<pre style="width: 200px;" class="cs">*.OrderBy(x => x.SMTH)</pre>
 	</div>
 	<div class="clear"></div>
+</fieldset>		
+<div class="clear"></div>
+
+<fieldset style="width:45%;" class="content_left">
+	<legend>Search (custom, useful for most basic scenarios)</legend>
+	<p>Try these searches: <em>"1 3 5", "City", "Russia India", "bel mos ind"</em></p>
+
+	@using (Html.BeginForm("Search", "Home")) {
+		@Html.TextBoxFor(m => m.SearchTerm, new { style="width:50%;" })
+		@Html.DropDownListFor(m => m.SearchField, Model.SearchFieldList)
+
+		<input type="submit" value="Search" />
+	}
 </fieldset>
+
+<fieldset style="width:45%;" class="content_left">
+	<legend>Search (Lucene default, for query testing)</legend>
+	<p>Try these search: <em>"bel* mos* ind*"</em></p>
+
+	@using (Html.BeginForm("SearchDefault", "Home")) {
+		@Html.TextBoxFor(m => m.SearchTerm, new { style="width:50%;" })
+		@Html.DropDownListFor(m => m.SearchField, Model.SearchFieldList)
+
+		<input type="submit" value="Search" />
+	}
+</fieldset>
+<div class="clear"></div>
 		
 @if (Model.SampleSearchResults.Any()) {
 	<fieldset>
