@@ -1,7 +1,7 @@
 
-# Simple Lucene.Net Usage Example - v.1.3
+# Simple Lucene.Net sample search - v.1.4
 
-#### Visual Studio 2010 and MVC3 project
+#### Visual Studio 2010 project - includes MVC and WebForms examples
 
 This project is an illustration for my [CodeProject.com](http://codeproject.com) article:
 

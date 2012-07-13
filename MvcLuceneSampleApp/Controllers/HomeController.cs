@@ -1,67 +1,79 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web.Mvc;
-using MvcLuceneSampleApp.Search;
+using LuceneSearch.Data;
+using LuceneSearch.Service;
+using LuceneSearch.Model;
 using MvcLuceneSampleApp.ViewModels;
 
 namespace MvcLuceneSampleApp.Controllers {
 	public class HomeController : Controller {
-		private IEnumerable<SampleData> _searchResults;
-
-		public ActionResult Index(string searchTerm, string searchField, string type) {
+		public ActionResult Index
+      (string searchTerm, string searchField, bool? searchDefault, int? limit) {
 			// create default Lucene search index directory
-			if (!Directory.Exists(LuceneSearch._luceneDir)) Directory.CreateDirectory(LuceneSearch._luceneDir);
+			if (!Directory.Exists(GoLucene._luceneDir)) Directory.CreateDirectory(GoLucene._luceneDir);
 
 			// perform Lucene search
-			if (string.IsNullOrEmpty(type))
-				_searchResults = string.IsNullOrEmpty(searchField)
-				                 	? LuceneSearch.Search(searchTerm)
-				                 	: LuceneSearch.Search(searchTerm, searchField);
-			else if (type == "default")
-				_searchResults = string.IsNullOrEmpty(searchField)
-				                 	? LuceneSearch.SearchDefault(searchTerm)
-				                 	: LuceneSearch.SearchDefault(searchTerm, searchField);
-			
+		  List<SampleData> _searchResults;
+      if (searchDefault == true)
+        _searchResults = (string.IsNullOrEmpty(searchField)
+                           ? GoLucene.SearchDefault(searchTerm)
+                           : GoLucene.SearchDefault(searchTerm, searchField)).ToList();
+      else
+        _searchResults = (string.IsNullOrEmpty(searchField)
+                           ? GoLucene.Search(searchTerm)
+                           : GoLucene.Search(searchTerm, searchField)).ToList();
+      if (string.IsNullOrEmpty(searchTerm) && !_searchResults.Any())
+        _searchResults = GoLucene.GetAllIndexRecords().ToList();
+      
+
 			// setup and return view model
 			var search_field_list = new
-				List<SelectListItem> {
-				                     	new SelectListItem {Text = "(All Fields)", Value = ""},
-				                     	new SelectListItem {Text = "Id", Value = "Id"},
-				                     	new SelectListItem {Text = "Name", Value = "Name"},
-				                     	new SelectListItem {Text = "Description", Value = "Description"}
+				List<SelectedList> {
+				                     	new SelectedList {Text = "(All Fields)", Value = ""},
+				                     	new SelectedList {Text = "Id", Value = "Id"},
+				                     	new SelectedList {Text = "Name", Value = "Name"},
+				                     	new SelectedList {Text = "Description", Value = "Description"}
 				                     };
-			return View(new IndexViewModel {
-			                               	AllSampleData = SampleDataRepository.GetAll(),
-			                               	AllSearchIndexData = LuceneSearch.GetAllIndexRecords(),
+
+      // limit display number of database records
+		  var limitDb = limit == null ? 3 : Convert.ToInt32(limit);
+		  List<SampleData> allSampleData;
+		  if (limitDb > 0) {
+		    allSampleData = SampleDataRepository.GetAll().ToList().Take(limitDb).ToList();
+        ViewBag.Limit = SampleDataRepository.GetAll().Count - limitDb;
+		  }
+		  else allSampleData = SampleDataRepository.GetAll();
+
+		  return View(new IndexViewModel {
+			                               	AllSampleData = allSampleData,
+			                               	SearchIndexData = _searchResults,
 			                               	SampleData = new SampleData {Id = 9, Name = "El-Paso", Description = "City in Texas"},
-			                               	SampleSearchResults = _searchResults,
 			                               	SearchFieldList = search_field_list,
 			                               });
 		}
 
-		public ActionResult Search(string searchTerm, string searchField) {
-			return RedirectToAction("Index", new {searchTerm, searchField});
-		}
-
-		public ActionResult SearchDefault(string searchTerm, string searchField) {
-			return RedirectToAction("Index", new {type = "default", searchTerm, searchField});
+		public ActionResult Search(string searchTerm, string searchField, string searchDefault) {
+			return RedirectToAction("Index", new {searchTerm, searchField, searchDefault});
 		}
 
 		public ActionResult CreateIndex() {
-			LuceneSearch.AddUpdateLuceneIndex(SampleDataRepository.GetAll());
+			GoLucene.AddUpdateLuceneIndex(SampleDataRepository.GetAll());
 			TempData["Result"] = "Search index was created successfully!";
 			return RedirectToAction("Index");
 		}
 
 		[HttpPost]
 		public ActionResult AddToIndex(SampleData sampleData) {
-			LuceneSearch.AddUpdateLuceneIndex(sampleData);
+			GoLucene.AddUpdateLuceneIndex(sampleData);
 			TempData["Result"] = "Record was added to search index successfully!";
 			return RedirectToAction("Index");
 		}
 
 		public ActionResult ClearIndex() {
-			if (LuceneSearch.ClearLuceneIndex())
+			if (GoLucene.ClearLuceneIndex())
 				TempData["Result"] = "Search index was cleared successfully!";
 			else
 				TempData["ResultFail"] = "Index is locked and cannot be cleared, try again later or clear manually!";
@@ -69,13 +81,13 @@ namespace MvcLuceneSampleApp.Controllers {
 		}
 
 		public ActionResult ClearIndexRecord(int id) {
-			LuceneSearch.ClearLuceneIndexRecord(id);
+			GoLucene.ClearLuceneIndexRecord(id);
 			TempData["Result"] = "Search index record was deleted successfully!";
 			return RedirectToAction("Index");
 		}
 
 		public ActionResult OptimizeIndex() {
-			LuceneSearch.Optimize();
+			GoLucene.Optimize();
 			TempData["Result"] = "Search index was optimized successfully!";
 			return RedirectToAction("Index");
 		}

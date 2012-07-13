@@ -1,5 +1,5 @@
 # git ignore file
-/MvcLuceneSampleApp/lucene_index
+lucene_index
 Thumbs.db
 *.obj
 *.exe

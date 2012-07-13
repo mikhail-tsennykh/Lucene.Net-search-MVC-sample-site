@@ -1,0 +1,10 @@
+﻿
+/* local site classes */
+.title {color:gray; font-weight: bold; font-size:1.5em; padding:10px 0 0 0;}
+.title .tip {color:silver;font-weight:normal;}
+.clear {clear: both;}
+.pointer {cursor: pointer;}
+.remove_edges {padding:0; margin:0;}
+.form_horizontal { }
+.form_horizontal p { float: left; margin-right: 10px;}
+.form_horizontal p:last-of-type { margin-right: 0px;}
