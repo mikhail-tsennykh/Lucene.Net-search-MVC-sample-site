@@ -1,8 +1,5 @@
-# git ignore file
-lucene_index
 Thumbs.db
 *.obj
-*.exe
 *.pdb
 *.user
 *.aps
@@ -19,10 +16,18 @@ Thumbs.db
 *.cache
 *.ilk
 *.log
-[Dd]ebug*/
 *.lib
 *.sbr
 obj/
+[Bb]in
+[Dd]ebug*/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
+lucene_index
+*.vssscc
+$tf*/
+/[Dd]eploy
+*.nupkg
+[Pp]ackages/
+[Ff]iles/
