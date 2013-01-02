@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcLuceneSampleApp", "MvcLuceneSampleApp\MvcLuceneSampleApp.csproj", "{9FB25887-178D-44A8-AD71-7B5887A9A0AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuceneSearch.Mvc", "LuceneSearch.Mvc\LuceneSearch.Mvc.csproj", "{9FB25887-178D-44A8-AD71-7B5887A9A0AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuceneSearch.Library", "LuceneSearch.Library\LuceneSearch.Library.csproj", "{DA2F9D29-5731-4CFE-BB9E-C0FD08DCEA3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebFormsLuceneSampleApp", "WebFormsLuceneSampleApp\WebFormsLuceneSampleApp.csproj", "{410CE422-837F-4B31-A4DF-7198DE2B5CEA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuceneSearch.WebForms", "LuceneSearch.WebForms\LuceneSearch.WebForms.csproj", "{410CE422-837F-4B31-A4DF-7198DE2B5CEA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E59E2303-08EC-465A-AAFF-4368485C009C}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E59E23
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuceneSearch.Data", "LuceneSearch.Data\LuceneSearch.Data.csproj", "{9A9EA2F1-F0C7-4CBB-B822-58504FDDDE47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{410CE422-837F-4B31-A4DF-7198DE2B5CEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{410CE422-837F-4B31-A4DF-7198DE2B5CEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{410CE422-837F-4B31-A4DF-7198DE2B5CEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A9EA2F1-F0C7-4CBB-B822-58504FDDDE47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A9EA2F1-F0C7-4CBB-B822-58504FDDDE47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A9EA2F1-F0C7-4CBB-B822-58504FDDDE47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A9EA2F1-F0C7-4CBB-B822-58504FDDDE47}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

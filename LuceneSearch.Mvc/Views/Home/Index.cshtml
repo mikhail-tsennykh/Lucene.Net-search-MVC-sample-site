@@ -6,9 +6,9 @@
 </div>
 <div class="clear"></div>
 
-<div class="col_8">		
+<div class="col_12">		
   <fieldset>
-	  <legend>Database records (@Html.ActionLink("Create Index [+]", "CreateIndex"))</legend> 
+	  <legend>Database records (@Html.ActionLink("Create Search Index From Database [+]", "CreateIndex"))</legend> 
 	  <table class="grid">
 		  <tr>
 			  <th>@Html.LabelFor(m => Model.SampleData.Id)</th>
@@ -27,31 +27,6 @@
     @if (ViewBag.Limit > 0) {
       <div class="margin_top10">And <b>@ViewBag.Limit</b> more records... (<a href="\?limit=0">See All</a>)</div>
     }
-  </fieldset>
-</div>
-		
-<div class="col_4">
-  <fieldset class="add_record">
-	  <legend>Add/Update search index record</legend>
-    Use Id of existing one to update
-	  @using (Html.BeginForm("AddToIndex", "Home")) {
-      <div class="form_horizontal">
-		    <p>
-			    @Html.LabelFor(m => m.SampleData.Id)<br/>
-			    @Html.TextBoxFor(m => m.SampleData.Id, new { style = "width:30px;" })
-		    </p>
-		    <p>
-			    @Html.LabelFor(m => m.SampleData.Name)<br/>
-			    @Html.TextBoxFor(m => m.SampleData.Name, new { style = "width:100px;" })
-		    </p>
-		    <p>
-			    @Html.LabelFor(m => m.SampleData.Description)<br/>
-			    @Html.TextBoxFor(m => m.SampleData.Description, new { style = "width:120px;" })
-		    </p>
-      </div>
-      <div class="clear"></div>
-		  <input type="submit" value="Add/Update Record" />
-	  }
   </fieldset>
 </div>
 
@@ -81,7 +56,7 @@
   </fieldset>
 </div>
 		
-<div class="col_12">
+<div class="col_8">
   <fieldset>
 	  <legend>
 		  Search index
@@ -109,6 +84,31 @@
     } else {
       <text><br/>No search index records found...<br/></text>
     }
+  </fieldset>
+</div>
+
+<div class="col_4">
+  <fieldset class="add_record">
+	  <legend>Add/Update search index record</legend>
+    Use Id of existing one to update
+	  @using (Html.BeginForm("AddToIndex", "Home")) {
+      <div class="form_horizontal">
+		    <p>
+			    @Html.LabelFor(m => m.SampleData.Id)<br/>
+			    @Html.TextBoxFor(m => m.SampleData.Id, new { style = "width:30px;" })
+		    </p>
+		    <p>
+			    @Html.LabelFor(m => m.SampleData.Name)<br/>
+			    @Html.TextBoxFor(m => m.SampleData.Name, new { style = "width:100px;" })
+		    </p>
+		    <p>
+			    @Html.LabelFor(m => m.SampleData.Description)<br/>
+			    @Html.TextBoxFor(m => m.SampleData.Description, new { style = "width:120px;" })
+		    </p>
+      </div>
+      <div class="clear"></div>
+		  <input type="submit" value="Add/Update Record" />
+	  }
   </fieldset>
 </div>
 

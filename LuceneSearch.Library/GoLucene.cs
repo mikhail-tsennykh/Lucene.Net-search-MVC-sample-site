@@ -39,10 +39,10 @@ namespace LuceneSearch.Service {
 			var reader = IndexReader.Open(_directory, false);
 			var docs = new List<Document>();
 			var term = reader.TermDocs();
-			while (term.Next()) docs.Add(searcher.Doc(term.Doc()));
-			reader.Close();
+      // v 2.9.4: use 'hit.Doc()'
+      // v 3.0.3: use 'hit.Doc'
+			while (term.Next()) docs.Add(searcher.Doc(term.Doc));
 			reader.Dispose();
-			searcher.Close();
 			searcher.Dispose();
 			return _mapLuceneToDataList(docs);
 		}
@@ -77,7 +77,6 @@ namespace LuceneSearch.Service {
 					var hits = searcher.Search(query, hits_limit).ScoreDocs;
 					var results = _mapLuceneToDataList(hits, searcher);
 					analyzer.Close();
-					searcher.Close();
 					searcher.Dispose();
 					return results;
 				}
@@ -89,7 +88,6 @@ namespace LuceneSearch.Service {
 					var hits = searcher.Search(query, null, hits_limit, Sort.INDEXORDER).ScoreDocs;
 					var results = _mapLuceneToDataList(hits, searcher);
 					analyzer.Close();
-					searcher.Close();
 					searcher.Dispose();
 					return results;
 				}
@@ -112,7 +110,9 @@ namespace LuceneSearch.Service {
 			return hits.Select(_mapLuceneDocumentToData).ToList();
 		}
 		private static IEnumerable<SampleData> _mapLuceneToDataList(IEnumerable<ScoreDoc> hits, IndexSearcher searcher) {
-			return hits.Select(hit => _mapLuceneDocumentToData(searcher.Doc(hit.doc))).ToList();
+      // v 2.9.4: use 'hit.doc'
+      // v 3.0.3: use 'hit.Doc'
+			return hits.Select(hit => _mapLuceneDocumentToData(searcher.Doc(hit.Doc))).ToList();
 		}
 		private static SampleData _mapLuceneDocumentToData(Document doc) {
 			return new SampleData {
@@ -136,7 +136,6 @@ namespace LuceneSearch.Service {
 
 				// close handles
 				analyzer.Close();
-				writer.Close();
 				writer.Dispose();
 			}
 		}
@@ -150,7 +149,6 @@ namespace LuceneSearch.Service {
 
 				// close handles
 				analyzer.Close();
-				writer.Close();
 				writer.Dispose();
 			}
 		}
@@ -163,7 +161,6 @@ namespace LuceneSearch.Service {
 
 					// close handles
 					analyzer.Close();
-					writer.Close();
 					writer.Dispose();
 				}
 			}
@@ -177,7 +174,6 @@ namespace LuceneSearch.Service {
 			using (var writer = new IndexWriter(_directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED)) {
 				analyzer.Close();
 				writer.Optimize();
-				writer.Close();
 				writer.Dispose();
 			}
 		}

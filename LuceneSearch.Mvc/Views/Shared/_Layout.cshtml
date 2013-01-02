@@ -1,0 +1,39 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Lucene.Net | MVC</title>
+	<link href="@Url.Content("~/Content/style.css")" rel="stylesheet" type="text/css" />
+  <link href="@Url.Content("~/Content/kickstart/kickstart.css")" rel="stylesheet" type="text/css" />
+  <link href="@Url.Content("~/Content/style.css")" rel="stylesheet" type="text/css" />
+  <link href="@Url.Content("~/Content/style.lib.css")" rel="stylesheet" type="text/css" />
+  <link href="@Url.Content("~/Content/style.local.css")" rel="stylesheet" type="text/css" />
+  
+	<script src="http://code.jquery.com/jquery.min.js" type="text/javascript"></script>
+	<script type="text/javascript">window.jQuery || document.write('<script src="@Url.Content("~/Scripts/jquery-1.7.2.min.js")"><\/script>')</script>
+  <script src="@Url.Content("~/Scripts/kickstart.js")" type="text/javascript"></script>
+  <script src="@Url.Content("~/Scripts/prettify.js")" type="text/javascript"></script>
+
+</head>
+<body>
+  
+	<div class="header clearfix">
+	  <div class="top_menu"><a href="/">Home</a></div>
+		<h2>Lucene.Net for MVC => made easy!</h2>
+		<h3>Simple Lucene.Net Usage Example Site</h3>
+	</div>
+
+  <div class="content clearfix">
+		@RenderBody()
+	</div>
+	
+	<div class="footer">
+		© @DateTime.Now.Year <a target="_blank" href="http://www.codeproject.com/Members/Mikhail-T">Mikhail Tsennykh</a>
+    | <a href="http://www.codeproject.com/info/cpol10.aspx">License</a>    | Built with <a href="http://www.99lime.com">HTML KickStart</a>
+	</div>
+
+</body>
+</html>

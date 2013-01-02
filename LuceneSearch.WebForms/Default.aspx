@@ -8,10 +8,10 @@
   </div>
   <div class="clear"></div>
 
-  <div class="col_8">
+  <div class="col_12">
     <fieldset>
 	    <legend>
-	      Database records (<asp:LinkButton ID="lnkCreateIndex" OnClick="CreateIndex_Click" runat="server">Create Index [+]</asp:LinkButton>)
+	      Database records (<asp:LinkButton ID="lnkCreateIndex" OnClick="CreateIndex_Click" runat="server">Create Search Index From Database [+]</asp:LinkButton>)
 	    </legend> 
       
       <asp:ListView ID="lvDatabase" DataKeyNames="Id" runat="server">
@@ -39,28 +39,7 @@
     </fieldset>
   </div>
   
-  <div class="col_4">
-    <fieldset>
-	    <legend>Add/Update search index record</legend>
-      Use Id of existing one to update
-      <div class="form_horizontal">
-        <p>
-          Id<br/><asp:TextBox ID="txtId" Width="30" runat="server" />
-        </p>
-        <p>
-          Name<br/><asp:TextBox ID="txtName" Width="100" runat="server" />
-        </p>
-        <p>
-          Description<br/><asp:TextBox ID="txtDescription" Width="120" runat="server" />
-        </p>
-      </div>
-      <div class="clear"></div>
-      <asp:Button ID="btnAddUpdate" Text="Add/Update Record" OnClick="btnAddUpdate_Click" runat="server" />
-    </fieldset>
-  </div>
-  <div class="clear"></div>
-  
-  <div class="col_12">
+  <div class="searchBox col_12">
     <fieldset>
 	    <legend>Search (custom, useful for most basic scenarios)</legend>
       <div class="content_left margin_top5">
@@ -84,7 +63,7 @@
     </fieldset>
   </div>
   
-  <div class="col_12">
+  <div class="col_8">
     <fieldset>
 	    <legend>
 		    Search index
@@ -122,12 +101,41 @@
 
     </fieldset>
   </div>
-
-
+  
+  <div class="addRecord col_4">
+    <fieldset>
+	    <legend>Add/Update search index record</legend>
+      Use Id of existing one to update
+      <div class="form_horizontal">
+        <p>
+          Id<br/><asp:TextBox ID="txtId" Text="9" Width="30" runat="server" />
+        </p>
+        <p>
+          Name<br/><asp:TextBox ID="txtName" Text="El-Paso" Width="100" runat="server" />
+        </p>
+        <p>
+          Description<br/><asp:TextBox ID="txtDescription" Text="City in Texas" Width="120" runat="server" />
+        </p>
+      </div>
+      <div class="clear"></div>
+      <asp:Button ID="btnAddUpdate" Text="Add/Update Record" OnClick="btnAddUpdate_Click" runat="server" />
+    </fieldset>
+  </div>
+  <div class="clear"></div>
+  
   <script type="text/javascript">
     $(document).ready(function () {
-      $('#SearchTerm').focus();
+      $('#PageBody_txtSearch').focus();
       $('.grid tr:even').css("background", "silver");
+      
+      var key_codes = { 'enter_key': 13 };
+      $('.addRecord').keypress(function (e) {
+        if (e.which == key_codes.enter_key) { $('#PageBody_btnAddUpdate').click(); }
+      });
+      $('.searchBox').keypress(function (e) {
+        if (e.which == key_codes.enter_key) { $('#PageBody_btnSearch').click(); }
+      });
+
     });
   </script>
 </asp:Content>

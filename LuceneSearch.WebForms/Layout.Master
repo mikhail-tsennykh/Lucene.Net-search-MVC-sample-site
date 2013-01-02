@@ -1,0 +1,38 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Layout.Master.cs" Inherits="WebFormsLuceneSampleApp.SiteMaster" %>
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+  <title>Lucene.Net | WebForms</title>
+  <link href="Content/kickstart/kickstart.css" rel="stylesheet" type="text/css" />
+  <link href="Content/style.css" rel="stylesheet" type="text/css" />
+  <link href="Content/style.lib.css" rel="stylesheet" type="text/css" />
+  <link href="Content/style.local.css" rel="stylesheet" type="text/css" />
+  
+	<script src="http://code.jquery.com/jquery.min.js" type="text/javascript"></script>
+	<script type="text/javascript">window.jQuery || document.write('<script src="Scripts/jquery-1.7.2.min.js"><\/script>')</script>
+  <script src="Scripts/kickstart.js" type="text/javascript"></script>
+  <script src="Scripts/prettify.js" type="text/javascript"></script>
+
+</head>
+<body>
+<form id="form1" runat="server">
+
+	<div class="header clearfix">
+	  <div class="top_menu"><a href="/">Home</a></div>
+		<h2>Lucene.Net for WebForms => made easy!</h2>
+		<h3>Simple Lucene.Net Usage Example Site</h3>
+	</div>
+
+  <div class="content">
+		<asp:contentplaceholder id="PageBody" runat="server" />
+    <div class="clear"></div>
+	</div>
+
+	<div class="footer">
+		© <%= DateTime.Now.Year %> <a target="_blank" href="http://www.codeproject.com/Members/Mikhail-T">Mikhail Tsennykh</a>
+    | <a href="http://www.codeproject.com/info/cpol10.aspx">License</a>    | Built with <a href="http://www.99lime.com">HTML KickStart</a>	</div>
+
+</form>
+</body>
+</html>
