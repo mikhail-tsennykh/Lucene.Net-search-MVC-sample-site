@@ -27,7 +27,6 @@ namespace LuceneSearch.Service {
 				return _directoryTemp;
 			}
 		}
-		
 
 		// search methods
 		public static IEnumerable<SampleData> GetAllIndexRecords() {
@@ -39,8 +38,8 @@ namespace LuceneSearch.Service {
 			var reader = IndexReader.Open(_directory, false);
 			var docs = new List<Document>();
 			var term = reader.TermDocs();
-      // v 2.9.4: use 'hit.Doc()'
-      // v 3.0.3: use 'hit.Doc'
+      // v 2.9.4: use 'term.Doc()'
+      // v 3.0.3: use 'term.Doc'
 			while (term.Next()) docs.Add(searcher.Doc(term.Doc));
 			reader.Dispose();
 			searcher.Dispose();
@@ -59,7 +58,6 @@ namespace LuceneSearch.Service {
 			return string.IsNullOrEmpty(input) ? new List<SampleData>() : _search(input, fieldName);
 		}
 
-
 		// main search method
 		private static IEnumerable<SampleData> _search(string searchQuery, string searchField = "") {
 			// validation
@@ -68,11 +66,11 @@ namespace LuceneSearch.Service {
 			// set up lucene searcher
 			using (var searcher = new IndexSearcher(_directory, false)) {
 				var hits_limit = 1000;
-				var analyzer = new StandardAnalyzer(Version.LUCENE_29);
+				var analyzer = new StandardAnalyzer(Version.LUCENE_30);
 
 				// search by single field
 				if (!string.IsNullOrEmpty(searchField)) {
-					var parser = new QueryParser(Version.LUCENE_29, searchField, analyzer);
+					var parser = new QueryParser(Version.LUCENE_30, searchField, analyzer);
 					var query = parseQuery(searchQuery, parser);
 					var hits = searcher.Search(query, hits_limit).ScoreDocs;
 					var results = _mapLuceneToDataList(hits, searcher);
@@ -83,7 +81,7 @@ namespace LuceneSearch.Service {
 				// search by multiple fields (ordered by RELEVANCE)
 				else {
 					var parser = new MultiFieldQueryParser
-						(Version.LUCENE_29, new[] {"Id", "Name", "Description"}, analyzer);
+						(Version.LUCENE_30, new[] {"Id", "Name", "Description"}, analyzer);
 					var query = parseQuery(searchQuery, parser);
 					var hits = searcher.Search(query, null, hits_limit, Sort.INDEXORDER).ScoreDocs;
 					var results = _mapLuceneToDataList(hits, searcher);
@@ -104,7 +102,6 @@ namespace LuceneSearch.Service {
 			return query;
 		}
 
-
 		// map Lucene search index to data
 		private static IEnumerable<SampleData> _mapLuceneToDataList(IEnumerable<Document> hits) {
 			return hits.Select(_mapLuceneDocumentToData).ToList();
@@ -121,7 +118,6 @@ namespace LuceneSearch.Service {
 			                      	Description = doc.Get("Description")
 			                      };
 		}
-		
 
 		// add/update/clear search index data 
 		public static void AddUpdateLuceneIndex(SampleData sampleData) {
@@ -129,7 +125,7 @@ namespace LuceneSearch.Service {
 		}
 		public static void AddUpdateLuceneIndex(IEnumerable<SampleData> sampleDatas) {
 			// init lucene
-			var analyzer = new StandardAnalyzer(Version.LUCENE_29);
+			var analyzer = new StandardAnalyzer(Version.LUCENE_30);
 			using (var writer = new IndexWriter(_directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED)) {
 				// add data to lucene search index (replaces older entries if any)
 				foreach (var sampleData in sampleDatas) _addToLuceneIndex(sampleData, writer);
@@ -141,7 +137,7 @@ namespace LuceneSearch.Service {
 		}
 		public static void ClearLuceneIndexRecord(int record_id) {
 			// init lucene
-			var analyzer = new StandardAnalyzer(Version.LUCENE_29);
+			var analyzer = new StandardAnalyzer(Version.LUCENE_30);
 			using (var writer = new IndexWriter(_directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED)) {
 				// remove older index entry
 				var searchQuery = new TermQuery(new Term("Id", record_id.ToString()));
@@ -154,7 +150,7 @@ namespace LuceneSearch.Service {
 		}
 		public static bool ClearLuceneIndex() {
 			try {
-				var analyzer = new StandardAnalyzer(Version.LUCENE_29);
+				var analyzer = new StandardAnalyzer(Version.LUCENE_30);
 				using (var writer = new IndexWriter(_directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED)) {
 					// remove older index entries
 					writer.DeleteAll();
@@ -170,7 +166,7 @@ namespace LuceneSearch.Service {
 			return true;
 		}
 		public static void Optimize() {
-			var analyzer = new StandardAnalyzer(Version.LUCENE_29);
+			var analyzer = new StandardAnalyzer(Version.LUCENE_30);
 			using (var writer = new IndexWriter(_directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED)) {
 				analyzer.Close();
 				writer.Optimize();
