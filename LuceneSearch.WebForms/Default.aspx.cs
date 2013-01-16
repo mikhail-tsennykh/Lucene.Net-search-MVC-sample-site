@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using LuceneSearch.Service;
-using LuceneSearch.Data;
+using LuceneSearch.Repository;
 using LuceneSearch.Model;
 using WebFormsLuceneSampleApp.ViewModels;
 

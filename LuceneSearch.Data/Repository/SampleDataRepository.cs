@@ -2,7 +2,7 @@
 using System.Linq;
 using LuceneSearch.Model;
 
-namespace LuceneSearch.Data {
+namespace LuceneSearch.Repository {
   public static class SampleDataRepository {
     public static SampleData Get(int id) {
       return GetAll().SingleOrDefault(x => x.Id.Equals(id));

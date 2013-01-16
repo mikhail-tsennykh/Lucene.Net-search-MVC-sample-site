@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
-using LuceneSearch.Data;
+using LuceneSearch.Repository;
 using LuceneSearch.Service;
 using LuceneSearch.Model;
 using MvcLuceneSampleApp.ViewModels;
