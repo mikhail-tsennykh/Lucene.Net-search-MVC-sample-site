@@ -14,7 +14,7 @@ using Version = Lucene.Net.Util.Version;
 
 namespace LuceneSearch.Service {
 	public static class GoLucene {
-		// properties
+		// Properties
 		public static string _luceneDir =
 			Path.Combine(HttpContext.Current.Request.PhysicalApplicationPath, "lucene_index");
 		private static FSDirectory _directoryTemp;
@@ -28,7 +28,19 @@ namespace LuceneSearch.Service {
 			}
 		}
 
-		// search methods
+		// Search methods
+    public static IEnumerable<SampleData> Search(string input, string fieldName = "") {
+			if (string.IsNullOrEmpty(input)) return new List<SampleData>();
+			
+			var terms = input.Trim().Replace("-", " ").Split(' ')
+				.Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim() + "*");
+			input = string.Join(" ", terms);
+
+			return _search(input, fieldName);
+		}
+		public static IEnumerable<SampleData> SearchDefault(string input, string fieldName = "") {
+			return string.IsNullOrEmpty(input) ? new List<SampleData>() : _search(input, fieldName);
+		}
 		public static IEnumerable<SampleData> GetAllIndexRecords() {
 			// validate search index
 			if (!System.IO.Directory.EnumerateFiles(_luceneDir).Any()) return new List<SampleData>();
@@ -43,22 +55,10 @@ namespace LuceneSearch.Service {
 			while (term.Next()) docs.Add(searcher.Doc(term.Doc));
 			reader.Dispose();
 			searcher.Dispose();
-			return _mapLuceneToDataList(docs);
-		}
-		public static IEnumerable<SampleData> Search(string input, string fieldName = "") {
-			if (string.IsNullOrEmpty(input)) return new List<SampleData>();
-			
-			var terms = input.Trim().Replace("-", " ").Split(' ')
-				.Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim() + "*");
-			input = string.Join(" ", terms);
-
-			return _search(input, fieldName);
-		}
-		public static IEnumerable<SampleData> SearchDefault(string input, string fieldName = "") {
-			return string.IsNullOrEmpty(input) ? new List<SampleData>() : _search(input, fieldName);
+		  return docs.MapToDataList();
 		}
 
-		// main search method
+		// Main search method
 		private static IEnumerable<SampleData> _search(string searchQuery, string searchField = "") {
 			// validation
 			if (string.IsNullOrEmpty(searchQuery.Replace("*", "").Replace("?", ""))) return new List<SampleData>();
@@ -73,7 +73,7 @@ namespace LuceneSearch.Service {
 					var parser = new QueryParser(Version.LUCENE_30, searchField, analyzer);
 					var query = parseQuery(searchQuery, parser);
 					var hits = searcher.Search(query, hits_limit).ScoreDocs;
-					var results = _mapLuceneToDataList(hits, searcher);
+					var results = hits.MapToDataList(searcher);
 					analyzer.Close();
 					searcher.Dispose();
 					return results;
@@ -84,7 +84,7 @@ namespace LuceneSearch.Service {
 						(Version.LUCENE_30, new[] {"Id", "Name", "Description"}, analyzer);
 					var query = parseQuery(searchQuery, parser);
 					var hits = searcher.Search(query, null, hits_limit, Sort.INDEXORDER).ScoreDocs;
-					var results = _mapLuceneToDataList(hits, searcher);
+				  var results = hits.MapToDataList(searcher);
 					analyzer.Close();
 					searcher.Dispose();
 					return results;
@@ -102,24 +102,7 @@ namespace LuceneSearch.Service {
 			return query;
 		}
 
-		// map Lucene search index to data
-		private static IEnumerable<SampleData> _mapLuceneToDataList(IEnumerable<Document> hits) {
-			return hits.Select(_mapLuceneDocumentToData).ToList();
-		}
-		private static IEnumerable<SampleData> _mapLuceneToDataList(IEnumerable<ScoreDoc> hits, IndexSearcher searcher) {
-      // v 2.9.4: use 'hit.doc'
-      // v 3.0.3: use 'hit.Doc'
-			return hits.Select(hit => _mapLuceneDocumentToData(searcher.Doc(hit.Doc))).ToList();
-		}
-		private static SampleData _mapLuceneDocumentToData(Document doc) {
-			return new SampleData {
-			                      	Id = Convert.ToInt32(doc.Get("Id")),
-			                      	Name = doc.Get("Name"),
-			                      	Description = doc.Get("Description")
-			                      };
-		}
-
-		// add/update/clear search index data 
+		// Add/update/clear search index data 
 		public static void AddUpdateLuceneIndex(SampleData sampleData) {
 			AddUpdateLuceneIndex(new List<SampleData> {sampleData});
 		}
@@ -188,6 +171,26 @@ namespace LuceneSearch.Service {
 
 			// add entry to index
 			writer.AddDocument(doc);
+		}
+
+    // Map Lucene search index to data
+		private static IEnumerable<SampleData> 
+      MapToDataList(this IEnumerable<Document> hits) {
+		  return hits.Select(hit => hit.MapToData()).ToList();
+		}
+		private static IEnumerable<SampleData> 
+      MapToDataList(this IEnumerable<ScoreDoc> hits, IndexSearcher searcher) {
+      // v 2.9.4: use 'hit.doc'
+      // v 3.0.3: use 'hit.Doc'
+		  return hits.Select(hit => searcher.Doc(hit.Doc).MapToData()).ToList();
+		}
+		private static SampleData 
+      MapToData(this Document doc) {
+			return new SampleData {
+			                      	Id = Convert.ToInt32(doc.Get("Id")),
+			                      	Name = doc.Get("Name"),
+			                      	Description = doc.Get("Description")
+			                      };
 		}
 
 	}
